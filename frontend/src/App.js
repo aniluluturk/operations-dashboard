@@ -55,9 +55,6 @@ const App = () => {
       .then((res) => res.json())
       .then((data) => {
         setMetrics(data);
-        if (data.length > 0) {
-          setSelectedMetric(data[0]); // Default to first metric (this leads to fetching historical data for the first metric by default).
-        }
       })
       .catch((err) => console.error("Failed to fetch metrics:", err));
   }, []);
@@ -311,7 +308,7 @@ const App = () => {
     }));
   };
 
- // Handler for group toggle. When a certain label key / dimension is selected, updates groups, and eventually the grouped data.
+  // Handler for group toggle. When a certain label key / dimension is selected, updates groups, and eventually the grouped data.
   const toggleGroupBy = (label) => {
     setGroupBy((prev) =>
       prev.includes(label) ? prev.filter((l) => l !== label) : [...prev, label]
@@ -335,45 +332,50 @@ const App = () => {
           <Menu metrics={metrics} selectedMetric={selectedMetric} onMetricChange={handleMetricChange} />
         </Col>
         <Col md={6} className="p-3">
-          <Row>
-            <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
-              <Tab eventKey="chart" title="Chart">
-                <Card style={{justifyContent: 'center', alignItems: 'center'}}>
-                  <Card.Body style={{justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%'}}>
-                    <Graphs
-                      selectedMetric={selectedMetric}
-                      lineChartJsData={lineChartJsData}
-                      pieChartJsData={pieChartJsData}
-                      scatterChartData={scatterChartData}
-                      chartOptions={chartOptions}
-                      scatterChartOptions={scatterChartOptions}
-                    />
-                  </Card.Body>
-                </Card>
-              </Tab>
-              <Tab eventKey="table" title="Table">
-                <Card>
-                  <Card.Body style={{ height: "500px", overflowY: "auto" }}>
-                    <Tables
-                      selectedMetric={selectedMetric}
-                      filteredData={filteredData}
-                      rawTableData={rawTableData}
-                    />
-                  </Card.Body>
-                </Card>
-              </Tab>
-            </Tabs>
-          </Row>
-          <Row className='mt-5'>
-            <Controls
-              fetchMetricData={fetchMetricData}
-              selectedMetric={selectedMetric}
-              endDate={endDate}
-              setEndDate={setEndDate}
-              duration={duration}
-              setDuration={setDuration}
-            />
-          </Row>
+          {selectedMetric ?
+            (<><Row>
+              <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
+                <Tab eventKey="chart" title="Chart">
+                  <Card style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    <Card.Body style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>
+                      <Graphs
+                        selectedMetric={selectedMetric}
+                        lineChartJsData={lineChartJsData}
+                        pieChartJsData={pieChartJsData}
+                        scatterChartData={scatterChartData}
+                        chartOptions={chartOptions}
+                        scatterChartOptions={scatterChartOptions}
+                      />
+                    </Card.Body>
+                  </Card>
+                </Tab>
+                <Tab eventKey="table" title="Table">
+                  <Card>
+                    <Card.Body style={{ height: "500px", overflowY: "auto" }}>
+                      <Tables
+                        selectedMetric={selectedMetric}
+                        filteredData={filteredData}
+                        rawTableData={rawTableData}
+                      />
+                    </Card.Body>
+                  </Card>
+                </Tab>
+              </Tabs>
+            </Row>
+              <Row className='mt-5'>
+                <Controls
+                  fetchMetricData={fetchMetricData}
+                  selectedMetric={selectedMetric}
+                  endDate={endDate}
+                  setEndDate={setEndDate}
+                  duration={duration}
+                  setDuration={setDuration}
+                />
+              </Row></>) :
+            <h3>
+              Please select a metric from the left menu to display.<br/>
+            </h3>
+          }
         </Col>
         {selectedMetric?.type === "gauge" && (
           <Filters

@@ -6,11 +6,11 @@ const Graphs = ({ selectedMetric, lineChartJsData, pieChartJsData, scatterChartD
   const chartStyle = { maxHeight: "500px", maxWidth: "100%" };
 
   if (selectedMetric?.type === "enum") {
-    return <Pie data={pieChartJsData} style={chartStyle} />;
+    return (pieChartJsData ? <Pie data={pieChartJsData} style={chartStyle} /> : <h3>Loading...</h3>);
   } else if (selectedMetric?.type === "gauge") {
-    return <Line data={lineChartJsData} options={lineChartOptions} style={chartStyle} />;
+    return (lineChartJsData ? <Line data={lineChartJsData} options={lineChartOptions} style={chartStyle} /> : <h3>Loading...</h3>);
   } else if (selectedMetric?.type === "histogram") {
-    return <Scatter data={scatterChartData} options={scatterChartOptions} style={chartStyle} />
+    return (scatterChartData ? <Scatter data={scatterChartData} options={scatterChartOptions} style={chartStyle} /> : <h3>Loading...</h3>);
   }
   return <div>Unsupported metric type</div>;
 };
