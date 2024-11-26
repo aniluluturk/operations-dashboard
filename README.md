@@ -25,6 +25,8 @@ It currently supports 3 visualizations for 3 different metric types:
 - enum -> Pie Chart
 - histogram -> Heatmap / Scatter Chart
 
+<img src="dashboard.png" alt="dashboard" width="800"/>
+
 ### Operations Backend
 
 Provides endpoints for creating new metrics, fetching them, adding new data points for them, and also fetching those data points with filters.
