@@ -11,7 +11,7 @@ The data provided to the backend is stored in a NoSQL database, which provides f
 
 All of these components are separately bundled as Docker images and they could either be brought up individually or altogether using docker-compose.
 
-### Operations Dashboard - Features
+### Operations Dashboard - Frontend
 
 Frontend is served from 'frontend' container on port 3000 by default. It has 3 main parts:
 
@@ -24,6 +24,101 @@ It currently supports 3 visualizations for 3 different metric types:
 - gauge -> Line Chart
 - enum -> Pie Chart
 - histogram -> Heatmap / Scatter Chart
+
+### Operations Backend
+
+Provides endpoints for creating new metrics, fetching them, adding new data points for them, and also fetching those data points with filters.
+
+### API Documentation
+
+#### Base URL
+- **http://<host>:5000**
+
+##### Metrics API
+
+###### 1. List All Metrics
+**Endpoint:** `GET /metrics`  
+**Description:** Retrieves a list of all available metrics.  
+**Response:**
+```
+[
+  {
+    "name": "metric_name",
+    "type": "gauge",
+    "label_keys": ["key1", "key2"],
+    "created_at": "2023-11-25T12:34:56Z"
+  }
+]
+```
+
+###### 2. Create a New Metric
+**Endpoint:** `POST /metrics`  
+**Description:** Adds a new metric to the system.  
+**Request Body:**
+```
+{
+  "name": "metric_name",
+  "type": "pie",
+  "label_keys": ["key1", "key2"]
+}
+```
+**Response:**  
+- Success:
+```
+{"message": "Success", "id": "unique_metric_id"}
+```
+- Error:
+```
+{"error": "Metric with the same name already exists"}
+```
+
+##### Metric Data API
+
+###### 3. Insert Metric Data
+**Endpoint:** `POST /metrics/<metric_name>/data`  
+**Description:** Inserts a new data point (historical metric data) for a specific metric.  
+**Path Parameter:**
+- `metric_name`: The name of the metric.  
+**Request Body:**
+```
+{
+  "labels": {"key1": "value1", "key2": "value2"},
+  "value": 123.45,
+  "buckets": {"bucket1": 10, "bucket2": 20},
+  "timestamp": "2023-11-25T12:34:56Z"  # Optional, defaults to current UTC time.
+}
+```
+**Response:**
+- Success:
+```
+{"message": "Success", "id": "unique_data_id"}
+```
+- Error:
+```
+{"error": "Labels must contain exactly these keys: ['key1', 'key2']"}
+```
+
+###### 4. Retrieve Metric History
+**Endpoint:** `GET /metrics/<metric_name>/data`  
+**Description:** Retrieves historical data points for a specific metric with optional filters.  
+**Path Parameter:**
+- `metric_name`: The name of the metric.  
+**Query Parameters (Optional):**
+- `start_time`: ISO 8601 datetime (e.g., `2023-11-25T12:34:56Z`) to filter data starting from this time.
+- `end_time`: ISO 8601 datetime to filter data up to this time.
+- Other query parameters can be used as label filters (e.g., `key1=value1`).  
+
+**Response:**
+```
+[
+  {
+    "labels": {"key1": "value1", "key2": "value2"},
+    "value": 123.45,
+    "buckets": {"10": 10, "20": 20, "+inf": 0},
+    "timestamp": "2023-11-25T12:34:56Z"
+  }
+]
+```
 
 ## Technical Dependencies
 
