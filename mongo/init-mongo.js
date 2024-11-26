@@ -1,10 +1,10 @@
 db = db.getSiblingDB('admin');
-db.auth('root', '123456');
+db.auth(process.env.MONGO_INITDB_ROOT_USERNAME, process.env.MONGO_INITDB_ROOT_PASSWORD);
 
 db = db.getSiblingDB('operations');
 db.createUser({
-    user: 'backend',
-    pwd: 'very_secure_password',
+    user: process.env.MONGO_INITDB_BACKEND_USERNAME,
+    pwd: process.env.MONGO_INITDB_BACKEND_PASSWORD,
     roles: [
         {
             role: 'readWrite',
