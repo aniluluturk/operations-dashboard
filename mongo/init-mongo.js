@@ -15,3 +15,5 @@ db.createUser({
 
 db.createCollection('metrics');
 db.createCollection('metric_data');
+db.metrics.createIndex( { name: 1 } )
+db.metric_data.createIndex( { name: 1, timestamp: -1 } )
