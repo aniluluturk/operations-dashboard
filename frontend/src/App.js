@@ -328,10 +328,10 @@ const App = () => {
         </Col>
       </Row>
       <Row>
-        <Col md={3} className="border-end">
+        <Col md={2} className="border-end">
           <Menu metrics={metrics} selectedMetric={selectedMetric} onMetricChange={handleMetricChange} />
         </Col>
-        <Col md={6} className="p-3">
+        <Col md={7} className="p-3">
           {selectedMetric ?
             (<><Row>
               <Tabs activeKey={activeTab} onSelect={(k) => setActiveTab(k)}>
